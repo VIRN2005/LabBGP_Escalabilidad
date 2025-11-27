@@ -1,0 +1,80 @@
+enable
+configure terminal
+hostname ISP1-1941
+
+ipv6 unicast-routing
+
+interface GigabitEthernet0/0
+ description Trunk to SW_ISP1
+ no shutdown
+
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ description WAN HACIA ISP4
+ ip address 50.0.0.10 255.255.255.252
+ ipv6 address 2001:DB8:101:C002::2/64
+
+interface GigabitEthernet0/0.15
+ encapsulation dot1Q 15
+ description WAN HACIA ISP3
+ ip address 50.0.0.6 255.255.255.252
+ ipv6 address 2001:DB8:101:C001::2/64
+
+interface GigabitEthernet0/0.25
+ encapsulation dot1Q 25
+ description WAN HACIA ISP2
+ ip address 50.0.0.2 255.255.255.252
+ ipv6 address 2001:DB8:101:C000::2/64
+
+interface GigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ description WAN HACIA ER1
+ ip address 50.0.0.13 255.255.255.252
+ ipv6 address 2001:DB8:101:C003::1/64
+
+interface GigabitEthernet0/0.40
+ encapsulation dot1Q 40
+ description WAN HACIA ER2
+ ip address 50.0.0.17 255.255.255.252
+ ipv6 address 2001:DB8:101:C004::1/64
+
+interface Loopback0
+ ip address 50.0.0.100 255.255.255.255
+ ipv6 address 2001:DB8:101:1000::100/128
+
+router bgp 101
+ bgp router-id 50.0.0.100
+ bgp log-neighbor-changes
+ 
+ neighbor 50.0.0.9 remote-as 104
+ neighbor 50.0.0.5 remote-as 103
+ neighbor 50.0.0.1 remote-as 102
+ neighbor 50.0.0.14 remote-as 250
+ neighbor 50.0.0.18 remote-as 250
+ 
+ neighbor 2001:DB8:101:C002::1 remote-as 104
+ neighbor 2001:DB8:101:C001::1 remote-as 103
+ neighbor 2001:DB8:101:C000::1 remote-as 102
+ neighbor 2001:DB8:101:C003::2 remote-as 250
+ neighbor 2001:DB8:101:C004::2 remote-as 250
+ 
+ address-family ipv4
+  network 50.0.0.0 mask 255.255.255.0
+  neighbor 50.0.0.9 activate
+  neighbor 50.0.0.5 activate
+  neighbor 50.0.0.1 activate
+  neighbor 50.0.0.14 activate
+  neighbor 50.0.0.18 activate
+ exit-address-family
+ 
+ address-family ipv6
+  network 2001:DB8:101::/48
+  neighbor 2001:DB8:101:C002::1 activate
+  neighbor 2001:DB8:101:C001::1 activate
+  neighbor 2001:DB8:101:C000::1 activate
+  neighbor 2001:DB8:101:C003::2 activate
+  neighbor 2001:DB8:101:C004::2 activate
+ exit-address-family
+
+end
+write memory

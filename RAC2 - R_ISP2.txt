@@ -1,0 +1,70 @@
+enable
+configure terminal
+hostname ISP2-2901
+
+ipv6 unicast-routing
+
+interface GigabitEthernet0/0
+ description Trunk to SW_ISP2
+ no shutdown
+
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ description WAN HACIA ISP3
+ ip address 60.0.0.2 255.255.255.252
+ ipv6 address 2001:DB8:102:C000::2/64
+
+interface GigabitEthernet0/0.25
+ encapsulation dot1Q 25
+ description WAN HACIA ISP1
+ ip address 50.0.0.1 255.255.255.252
+ ipv6 address 2001:DB8:101:C000::1/64
+
+interface GigabitEthernet0/0.35
+ encapsulation dot1Q 35
+ description WAN HACIA ER1
+ ip address 60.0.0.5 255.255.255.252
+ ipv6 address 2001:DB8:102:C001::1/64
+
+interface GigabitEthernet0/0.45
+ encapsulation dot1Q 45
+ description WAN HACIA ER2
+ ip address 60.0.0.9 255.255.255.252
+ ipv6 address 2001:DB8:102:C002::1/64
+
+interface Loopback0
+ ip address 60.0.0.100 255.255.255.255
+ ipv6 address 2001:DB8:102:1000::100/128
+
+router bgp 102
+ bgp router-id 60.0.0.100
+ bgp log-neighbor-changes
+ 
+ neighbor 60.0.0.1 remote-as 103
+ neighbor 50.0.0.2 remote-as 101
+ neighbor 60.0.0.6 remote-as 250
+ neighbor 60.0.0.10 remote-as 250
+ 
+ neighbor 2001:DB8:102:C000::2 remote-as 103
+ neighbor 2001:DB8:101:C000::2 remote-as 101
+ neighbor 2001:DB8:102:C001::2 remote-as 250
+ neighbor 2001:DB8:102:C002::2 remote-as 250
+ 
+ address-family ipv4
+  network 60.0.0.0 mask 255.255.255.0
+  neighbor 60.0.0.1 activate
+  neighbor 50.0.0.2 activate
+  neighbor 60.0.0.6 activate
+  neighbor 60.0.0.10 activate
+ exit-address-family
+ 
+ address-family ipv6
+  network 2001:DB8:102::/48
+  neighbor 2001:DB8:102:C000::2 activate
+  neighbor 2001:DB8:101:C000::2 activate
+  neighbor 2001:DB8:102:C001::2 activate
+  neighbor 2001:DB8:102:C002::2 activate
+ exit-address-family
+
+end
+write memory
