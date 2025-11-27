@@ -1,0 +1,42 @@
+enable
+configure terminal
+hostname SW_C1
+
+vlan 60
+ name VLAN60_HACIA_ER1
+vlan 55
+ name VLAN55_HACIA_ER2
+vlan 70
+ name VLAN70_HACIA_C2
+vlan 85
+ name VLAN85_HACIA_R1
+vlan 75
+ name VLAN75_HACIA_R2
+
+interface GigabitEthernet0/1
+ description Trunk to C1
+ switchport mode trunk
+ switchport trunk allowed vlan all
+
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 60
+
+interface FastEthernet0/3
+ switchport mode access
+ switchport access vlan 55
+
+interface FastEthernet0/4
+ switchport mode access
+ switchport access vlan 70
+
+interface FastEthernet0/5
+ switchport mode access
+ switchport access vlan 85
+
+interface FastEthernet0/6
+ switchport mode access
+ switchport access vlan 75
+
+end
+write memory
