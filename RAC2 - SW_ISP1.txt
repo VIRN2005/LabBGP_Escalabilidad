@@ -1,0 +1,42 @@
+enable
+configure terminal
+hostname SW_ISP1
+
+vlan 10
+ name VLAN10_HACIA_ISP4
+vlan 15
+ name VLAN15_HACIA_ISP3
+vlan 25
+ name VLAN25_HACIA_ISP2
+vlan 30
+ name VLAN30_HACIA_ER1
+vlan 40
+ name VLAN40_HACIA_ER2
+
+interface GigabitEthernet0/1
+ description Trunk to ISP1
+ switchport mode trunk
+ switchport trunk allowed vlan all
+
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+
+interface FastEthernet0/3
+ switchport mode access
+ switchport access vlan 15
+
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 25
+
+interface FastEthernet0/4
+ switchport mode access
+ switchport access vlan 30
+
+interface FastEthernet0/5
+ switchport mode access
+ switchport access vlan 40
+
+end
+write memory
