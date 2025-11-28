@@ -163,7 +163,7 @@ network 2001:DB8:250:3000::/64
 network 2001:DB8:250:5000::/64
 network 2001:DB8:250:6000::/64
 network 2001:DB8:250:9000::/64
-network 2001:DB8:250:10000::/64
+network 2001:DB8:250:1000::/64
 
 exit-address-family
 
