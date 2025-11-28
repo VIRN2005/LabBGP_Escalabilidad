@@ -1,0 +1,171 @@
+enable
+conf t
+
+hostname C1
+username admin privilege 15 secret admin
+
+line con 0
+login local
+
+line vty 0 15
+login local
+
+banner motd #Acceso a C1. Solo a Personal Autorizado#
+
+ip domain-name c1.as250.com
+crypto key generate rsa general-keys modulus 1024
+
+ipv6 unicast-routing
+
+inter loopback 0
+desc C1LOOPBACK
+ip address 20.0.0.241 255.255.255.255
+ipv6 address 2001:DB8:250:1000::C1/128
+no shut
+
+inter g0/0.60
+encapsulation dot1q 60
+desc WAN ER1 10.0.1.0/30
+ip address 10.0.1.2 255.255.255.252
+ipv6 address 2001:DB8:250:2000::2/64
+no shut
+
+inter g0/0.55
+encapsulation dot1q 55
+desc WAN ER2 10.0.1.4/30
+ip address 10.0.1.6 255.255.255.252
+ipv6 address 2001:DB8:250:4000::6/64
+no shut
+
+inter g0/0.70
+encapsulation dot1q 70
+desc WAN C2 10.0.0.0/30
+ip address 10.0.0.1 255.255.255.252
+ipv6 address 2001:DB8:250:6000::1/64
+no shut
+
+inter g0/0.85
+encapsulation dot1q 85
+desc WAN R1 10.0.2.0/30
+ip address 10.0.2.1 255.255.255.252
+ipv6 address 2001:DB8:250:7000::1/64
+no shut
+
+inter g0/0.75
+encapsulation dot1q 75
+desc WAN R2 10.0.2.4/30
+ip address 10.0.2.5 255.255.255.252
+ipv6 address 2001:DB8:250:8000::5/64
+no shut
+
+inter g0/0
+no shut
+
+router ospf 1
+router-id 20.0.0.241
+network 10.0.0.0 0.0.0.3 area 0
+network 10.0.1.0 0.0.0.3 area 0
+network 10.0.1.4 0.0.0.3 area 0
+network 10.0.2.0 0.0.0.3 area 0
+network 10.0.2.4 0.0.0.3 area 0
+network 20.0.0.241 0.0.0.0 area 0
+
+ipv6 router ospf 1
+router-id 20.0.0.241
+
+inter g0/0.60
+ipv6 ospf 1 area 0
+
+inter g0/0.55
+ipv6 ospf 1 area 0
+
+inter g0/0.70
+ipv6 ospf 1 area 0
+
+inter g0/0.85
+ipv6 ospf 1 area 0
+
+inter g0/0.75
+ipv6 ospf 1 area 0
+
+inter loopback 0
+ipv6 ospf 1 area 0
+
+router bgp 250
+bgp router-id 20.0.0.241
+bgp log-neighbor-changes
+
+neighbor 20.0.0.251 remote-as 250
+neighbor 20.0.0.251 update-source Loopback0
+neighbor 20.0.0.251 next-hop-self
+
+neighbor 20.0.0.252 remote-as 250
+neighbor 20.0.0.252 update-source Loopback0
+neighbor 20.0.0.252 next-hop-self
+
+neighbor 20.0.0.242 remote-as 250
+neighbor 20.0.0.242 update-source Loopback0
+neighbor 20.0.0.242 next-hop-self
+
+neighbor 20.0.0.231 remote-as 250
+neighbor 20.0.0.231 update-source Loopback0
+neighbor 20.0.0.231 next-hop-self
+
+neighbor 20.0.0.232 remote-as 250
+neighbor 20.0.0.232 update-source Loopback0
+neighbor 20.0.0.232 next-hop-self
+
+neighbor 2001:DB8:250:1000::101 remote-as 250
+neighbor 2001:DB8:250:1000::101 update-source Loopback0
+neighbor 2001:DB8:250:1000::101 next-hop-self
+
+neighbor 2001:DB8:250:1000::102 remote-as 250
+neighbor 2001:DB8:250:1000::102 update-source Loopback0
+neighbor 2001:DB8:250:1000::102 next-hop-self
+
+neighbor 2001:DB8:250:1000::C2 remote-as 250
+neighbor 2001:DB8:250:1000::C2 update-source Loopback0
+neighbor 2001:DB8:250:1000::C2 next-hop-self
+
+neighbor 2001:DB8:250:1000::111 remote-as 250
+neighbor 2001:DB8:250:1000::111 update-source Loopback0
+neighbor 2001:DB8:250:1000::111 next-hop-self
+
+neighbor 2001:DB8:250:1000::112 remote-as 250
+neighbor 2001:DB8:250:1000::112 update-source Loopback0
+neighbor 2001:DB8:250:1000::112 next-hop-self
+
+address-family ipv4
+neighbor 20.0.0.251 activate
+neighbor 20.0.0.252 activate
+neighbor 20.0.0.242 activate
+neighbor 20.0.0.231 activate
+neighbor 20.0.0.232 activate
+
+network 20.0.0.241 mask 255.255.255.255
+network 10.0.0.0 mask 255.255.255.252
+network 10.0.1.0 mask 255.255.255.252
+network 10.0.1.4 mask 255.255.255.252
+network 10.0.2.0 mask 255.255.255.252
+network 10.0.2.4 mask 255.255.255.252
+
+exit-address-family
+
+address-family ipv6
+neighbor 2001:DB8:250:1000::101 activate
+neighbor 2001:DB8:250:1000::102 activate
+neighbor 2001:DB8:250:1000::C2 activate
+neighbor 2001:DB8:250:1000::111 activate
+neighbor 2001:DB8:250:1000::112 activate
+
+network 2001:DB8:250:1000::C1/128
+network 2001:DB8:250:2000::/64
+network 2001:DB8:250:4000::/64
+network 2001:DB8:250:6000::/64
+network 2001:DB8:250:7000::/64
+network 2001:DB8:250:8000::/64
+
+exit-address-family
+
+end
+write memory
