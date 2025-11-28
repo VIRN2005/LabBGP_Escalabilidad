@@ -78,68 +78,75 @@ bgp log-neighbor-changes
 
 neighbor 20.0.0.241 remote-as 250
 neighbor 20.0.0.241 update-source Loopback0
-neighbor 20.0.0.241 next-hop-self
+
 
 neighbor 20.0.0.242 remote-as 250
 neighbor 20.0.0.242 update-source Loopback0
-neighbor 20.0.0.242 next-hop-self
+
 
 neighbor 20.0.0.231 remote-as 250
 neighbor 20.0.0.231 update-source Loopback0
-neighbor 20.0.0.231 next-hop-self
+
 
 neighbor 20.0.0.232 remote-as 250
 neighbor 20.0.0.232 update-source Loopback0
-neighbor 20.0.0.232 next-hop-self
+
 
 neighbor 20.0.0.252 remote-as 250
 neighbor 20.0.0.252 update-source Loopback0
-neighbor 20.0.0.252 next-hop-self
+
 
 neighbor 50.0.0.13 remote-as 101
 neighbor 50.0.0.13 ebgp-multihop 20
-neighbor 50.0.0.13 next-hop-self
+
 
 neighbor 60.0.0.5 remote-as 102
 neighbor 60.0.0.5 ebgp-multihop 20
-neighbor 60.0.0.5 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::102 remote-as 250
 neighbor 2001:DB8:250:1000::102 update-source Loopback0
-neighbor 2001:DB8:250:1000::102 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::C1 remote-as 250
 neighbor 2001:DB8:250:1000::C1 update-source Loopback0
-neighbor 2001:DB8:250:1000::C1 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::C2 remote-as 250
 neighbor 2001:DB8:250:1000::C2 update-source Loopback0
-neighbor 2001:DB8:250:1000::C2 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::111 remote-as 250
 neighbor 2001:DB8:250:1000::111 update-source Loopback0
-neighbor 2001:DB8:250:1000::111 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::112 remote-as 250
 neighbor 2001:DB8:250:1000::112 update-source Loopback0
-neighbor 2001:DB8:250:1000::112 next-hop-self
+
 
 neighbor 2001:DB8:250:C003::13 remote-as 101
 neighbor 2001:DB8:250:C003::13 ebgp-multihop 20
-neighbor 2001:DB8:250:C003::13 next-hop-self
+
 
 neighbor 2001:DB8:250:C001::5 remote-as 102
 neighbor 2001:DB8:250:C001::5 ebgp-multihop 20
-neighbor 2001:DB8:250:C001::5 next-hop-self
+
 
 address-family ipv4
 neighbor 20.0.0.241 activate
+neighbor 20.0.0.241 next-hop-self
 neighbor 20.0.0.242 activate
+neighbor 20.0.0.242 next-hop-self
 neighbor 20.0.0.231 activate
+neighbor 20.0.0.231 next-hop-self
 neighbor 20.0.0.232 activate
+neighbor 20.0.0.232 next-hop-self
 neighbor 20.0.0.252 activate
+neighbor 20.0.0.252 next-hop-self
 neighbor 50.0.0.13 activate
+neighbor 50.0.0.13 next-hop-self
 neighbor 60.0.0.5 activate
+neighbor 60.0.0.5 next-hop-self
 
 network 20.0.0.251 mask 255.255.255.255
 network 10.0.1.0 mask 255.255.255.252
@@ -151,12 +158,19 @@ exit-address-family
 
 address-family ipv6
 neighbor 2001:DB8:250:1000::102 activate
+neighbor 2001:DB8:250:1000::102 next-hop-self
 neighbor 2001:DB8:250:1000::C1 activate
+neighbor 2001:DB8:250:1000::C1 next-hop-self
 neighbor 2001:DB8:250:1000::C2 activate
+neighbor 2001:DB8:250:1000::C2 next-hop-self
 neighbor 2001:DB8:250:1000::111 activate
+neighbor 2001:DB8:250:1000::111 next-hop-self
 neighbor 2001:DB8:250:1000::112 activate
+neighbor 2001:DB8:250:1000::112 next-hop-self
 neighbor 2001:DB8:250:C003::13 activate
+neighbor 2001:DB8:250:C003::13 next-hop-self
 neighbor 2001:DB8:250:C001::5 activate
+neighbor 2001:DB8:250:C001::5 next-hop-self
 
 network 2001:DB8:250:1000::101/128
 network 2001:DB8:250:2000::/64
