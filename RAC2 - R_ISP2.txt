@@ -1,70 +1,118 @@
 enable
-configure terminal
-hostname ISP2-2901
+conf t
+
+hostname ISP2
+username admin privilege 15 secret admin
+
+line con 0
+login local
+
+line vty 0 15
+login local
+
+banner motd #Acceso a ISP2. Solo a Personal Autorizado#
+
+ip domain-name isp2.com
+crypto key generate rsa general-keys modulus 1024
 
 ipv6 unicast-routing
 
-interface GigabitEthernet0/0
- description Trunk to SW_ISP2
- no shutdown
+inter loopback 0
+desc ISP2LOOPBACK
+ip address 60.0.0.100 255.255.255.255
+ipv6 address 2001:DB8:102:1000::100/128
+no shut
 
-interface GigabitEthernet0/0.20
- encapsulation dot1Q 20
- description WAN HACIA ISP3
- ip address 60.0.0.2 255.255.255.252
- ipv6 address 2001:DB8:102:C000::2/64
+inter g0/0.20
+encapsulation dot1q 20
+desc WAN ISP3 60.0.0.0/30
+ip address 60.0.0.2 255.255.255.252
+ipv6 address 2001:DB8:102:C000::2/64
+no shut
 
-interface GigabitEthernet0/0.25
- encapsulation dot1Q 25
- description WAN HACIA ISP1
- ip address 50.0.0.1 255.255.255.252
- ipv6 address 2001:DB8:101:C000::1/64
+inter g0/0.25
+encapsulation dot1q 25
+desc WAN ISP1 50.0.0.0/30
+ip address 50.0.0.1 255.255.255.252
+ipv6 address 2001:DB8:101:C000::1/64
+no shut
 
-interface GigabitEthernet0/0.35
- encapsulation dot1Q 35
- description WAN HACIA ER1
- ip address 60.0.0.5 255.255.255.252
- ipv6 address 2001:DB8:102:C001::1/64
+inter g0/0.35
+encapsulation dot1q 35
+desc WAN ER1 60.0.0.4/30
+ip address 60.0.0.5 255.255.255.252
+ipv6 address 2001:DB8:250:C001::5/64
+no shut
 
-interface GigabitEthernet0/0.45
- encapsulation dot1Q 45
- description WAN HACIA ER2
- ip address 60.0.0.9 255.255.255.252
- ipv6 address 2001:DB8:102:C002::1/64
+inter g0/0.45
+encapsulation dot1q 45
+desc WAN ER2 60.0.0.8/30
+ip address 60.0.0.9 255.255.255.252
+ipv6 address 2001:DB8:250:C002::9/64
+no shut
 
-interface Loopback0
- ip address 60.0.0.100 255.255.255.255
- ipv6 address 2001:DB8:102:1000::100/128
+inter g0/0
+no shut
 
 router bgp 102
- bgp router-id 60.0.0.100
- bgp log-neighbor-changes
- 
- neighbor 60.0.0.1 remote-as 103
- neighbor 50.0.0.2 remote-as 101
- neighbor 60.0.0.6 remote-as 250
- neighbor 60.0.0.10 remote-as 250
- 
- neighbor 2001:DB8:102:C000::2 remote-as 103
- neighbor 2001:DB8:101:C000::2 remote-as 101
- neighbor 2001:DB8:102:C001::2 remote-as 250
- neighbor 2001:DB8:102:C002::2 remote-as 250
- 
- address-family ipv4
-  network 60.0.0.0 mask 255.255.255.0
-  neighbor 60.0.0.1 activate
-  neighbor 50.0.0.2 activate
-  neighbor 60.0.0.6 activate
-  neighbor 60.0.0.10 activate
- exit-address-family
- 
- address-family ipv6
-  network 2001:DB8:102::/48
-  neighbor 2001:DB8:102:C000::2 activate
-  neighbor 2001:DB8:101:C000::2 activate
-  neighbor 2001:DB8:102:C001::2 activate
-  neighbor 2001:DB8:102:C002::2 activate
- exit-address-family
+bgp router-id 60.0.0.100
+bgp log-neighbor-changes
+
+neighbor 60.0.0.1 remote-as 103
+neighbor 60.0.0.1 ebgp-multihop 20
+neighbor 2001:DB8:102:C000::1 remote-as 103
+neighbor 2001:DB8:102:C000::1 ebgp-multihop 20
+
+neighbor 50.0.0.2 remote-as 101
+neighbor 50.0.0.2 ebgp-multihop 20
+neighbor 2001:DB8:101:C000::2 remote-as 101
+neighbor 2001:DB8:101:C000::2 ebgp-multihop 20
+
+neighbor 60.0.0.6 remote-as 250
+neighbor 60.0.0.6 ebgp-multihop 20
+neighbor 2001:DB8:250:C001::6 remote-as 250
+neighbor 2001:DB8:250:C001::6 ebgp-multihop 20
+
+neighbor 60.0.0.10 remote-as 250
+neighbor 60.0.0.10 ebgp-multihop 20
+neighbor 2001:DB8:250:C002::10 remote-as 250
+neighbor 2001:DB8:250:C002::10 ebgp-multihop 20
+
+address-family ipv4
+neighbor 60.0.0.1 activate
+neighbor 60.0.0.1 next-hop-self
+neighbor 50.0.0.2 activate
+neighbor 50.0.0.2 next-hop-self
+neighbor 60.0.0.6 activate
+neighbor 60.0.0.6 next-hop-self
+neighbor 60.0.0.10 activate
+neighbor 60.0.0.10 next-hop-self
+
+network 60.0.0.100 mask 255.255.255.255
+network 60.0.0.0 mask 255.255.255.252
+network 50.0.0.0 mask 255.255.255.252
+network 60.0.0.4 mask 255.255.255.252
+network 60.0.0.8 mask 255.255.255.252
+
+exit-address-family
+
+address-family ipv6
+neighbor 2001:DB8:102:C000::1 activate
+neighbor 2001:DB8:102:C000::1 next-hop-self
+neighbor 2001:DB8:101:C000::2 activate
+neighbor 2001:DB8:101:C000::2 next-hop-self
+neighbor 2001:DB8:250:C001::6 activate
+neighbor 2001:DB8:250:C001::6 next-hop-self
+neighbor 2001:DB8:250:C002::10 activate
+neighbor 2001:DB8:250:C002::10 next-hop-self
+
+network 2001:DB8:102:C000::/64
+network 2001:DB8:101:C000::/64
+network 2001:DB8:250:C001::/64
+network 2001:DB8:250:C002::/64
+network 2001:DB8:102:1000::100/128
+
+exit-address-family
 
 end
 write memory
