@@ -23,35 +23,35 @@ ip address 20.0.0.252 255.255.255.255
 ipv6 address 2001:DB8:250:1000::102/128
 no shut
 
-inter g0/0.40
+inter g0/0/0.40
 encapsulation dot1q 40
 desc WAN ISP1 50.0.0.16/30
 ip address 50.0.0.18 255.255.255.252
 ipv6 address 2001:DB8:250:C004::18/64
 no shut
 
-inter g0/0.45
+inter g0/0/0.45
 encapsulation dot1q 45
 desc WAN ISP2 60.0.0.8/30
 ip address 60.0.0.10 255.255.255.252
 ipv6 address 2001:DB8:250:C002::10/64
 no shut
 
-inter g0/0.55
+inter g0/0/0.55
 encapsulation dot1q 55
 desc WAN C1 10.0.1.4/30
 ip address 10.0.1.5 255.255.255.252
 ipv6 address 2001:DB8:250:4000::5/64
 no shut
 
-inter g0/0.65
+inter g0/0/0.65
 encapsulation dot1q 65
 desc WAN C2 10.0.1.12/30
 ip address 10.0.1.13 255.255.255.252
 ipv6 address 2001:DB8:250:5000::13/64
 no shut
 
-inter g0/0
+inter g0/0/0
 no shut
 
 router ospf 1
@@ -63,10 +63,10 @@ network 20.0.0.252 0.0.0.0 area 0
 ipv6 router ospf 1
 router-id 20.0.0.252
 
-inter g0/0.55
+inter g0/0/0.55
 ipv6 ospf 1 area 0
 
-inter g0/0.65
+inter g0/0/0.65
 ipv6 ospf 1 area 0
 
 inter loopback 0
@@ -78,59 +78,57 @@ bgp log-neighbor-changes
 
 neighbor 20.0.0.251 remote-as 250
 neighbor 20.0.0.251 update-source Loopback0
-neighbor 20.0.0.251 next-hop-self
 
 neighbor 20.0.0.241 remote-as 250
 neighbor 20.0.0.241 update-source Loopback0
-neighbor 20.0.0.241 next-hop-self
+
 
 neighbor 20.0.0.242 remote-as 250
 neighbor 20.0.0.242 update-source Loopback0
-neighbor 20.0.0.242 next-hop-self
+
 
 neighbor 20.0.0.231 remote-as 250
 neighbor 20.0.0.231 update-source Loopback0
-neighbor 20.0.0.231 next-hop-self
+
 
 neighbor 20.0.0.232 remote-as 250
 neighbor 20.0.0.232 update-source Loopback0
-neighbor 20.0.0.232 next-hop-self
+
 
 neighbor 50.0.0.17 remote-as 101
 neighbor 50.0.0.17 ebgp-multihop 20
-neighbor 50.0.0.17 next-hop-self
 
 neighbor 60.0.0.9 remote-as 102
 neighbor 60.0.0.9 ebgp-multihop 20
-neighbor 60.0.0.9 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::101 remote-as 250
 neighbor 2001:DB8:250:1000::101 update-source Loopback0
-neighbor 2001:DB8:250:1000::101 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::C1 remote-as 250
 neighbor 2001:DB8:250:1000::C1 update-source Loopback0
-neighbor 2001:DB8:250:1000::C1 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::C2 remote-as 250
 neighbor 2001:DB8:250:1000::C2 update-source Loopback0
-neighbor 2001:DB8:250:1000::C2 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::111 remote-as 250
 neighbor 2001:DB8:250:1000::111 update-source Loopback0
-neighbor 2001:DB8:250:1000::111 next-hop-self
+
 
 neighbor 2001:DB8:250:1000::112 remote-as 250
 neighbor 2001:DB8:250:1000::112 update-source Loopback0
-neighbor 2001:DB8:250:1000::112 next-hop-self
+
 
 neighbor 2001:DB8:250:C004::17 remote-as 101
 neighbor 2001:DB8:250:C004::17 ebgp-multihop 20
-neighbor 2001:DB8:250:C004::17 next-hop-self
+
 
 neighbor 2001:DB8:250:C002::9 remote-as 102
 neighbor 2001:DB8:250:C002::9 ebgp-multihop 20
-neighbor 2001:DB8:250:C002::9 next-hop-self
+
 
 address-family ipv4
 neighbor 20.0.0.251 activate
@@ -140,6 +138,15 @@ neighbor 20.0.0.231 activate
 neighbor 20.0.0.232 activate
 neighbor 50.0.0.17 activate
 neighbor 60.0.0.9 activate
+
+neighbor 20.0.0.251 next-hop-self
+neighbor 20.0.0.241 next-hop-self
+neighbor 20.0.0.242 next-hop-self
+neighbor 20.0.0.231 next-hop-self
+neighbor 20.0.0.232 next-hop-self
+neighbor 50.0.0.17 next-hop-self
+neighbor 60.0.0.9 next-hop-self
+
 
 network 20.0.0.252 mask 255.255.255.255
 network 10.0.1.4 mask 255.255.255.252
@@ -157,6 +164,14 @@ neighbor 2001:DB8:250:1000::111 activate
 neighbor 2001:DB8:250:1000::112 activate
 neighbor 2001:DB8:250:C004::17 activate
 neighbor 2001:DB8:250:C002::9 activate
+
+neighbor 2001:DB8:250:1000::101 next-hop-self
+neighbor 2001:DB8:250:1000::C1 next-hop-self
+neighbor 2001:DB8:250:1000::C2 next-hop-self
+neighbor 2001:DB8:250:1000::111 next-hop-self
+neighbor 2001:DB8:250:1000::112 next-hop-self
+neighbor 2001:DB8:250:C004::17 next-hop-self
+neighbor 2001:DB8:250:C002::9 next-hop-self
 
 network 2001:DB8:250:1000::102/128
 network 2001:DB8:250:4000::/64
