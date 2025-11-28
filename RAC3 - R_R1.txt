@@ -1,0 +1,139 @@
+enable
+conf t
+
+hostname R1
+username admin privilege 15 secret admin
+
+line con 0
+login local
+
+line vty 0 15
+login local
+
+banner motd #Acceso a R1. Solo a Personal Autorizado#
+
+ip domain-name r1.as250.com
+crypto key generate rsa general-keys modulus 1024
+
+ipv6 unicast-routing
+
+inter loopback 0
+desc R1LOOPBACK
+ip address 20.0.0.231 255.255.255.255
+ipv6 address 2001:DB8:250:1000::111/128
+no shut
+
+inter loopback 1
+desc R1NETWORK
+ip address 172.16.0.0 255.255.248.0
+no shut
+
+inter g0/0.85
+encapsulation dot1q 85
+desc WAN C1 10.0.2.0/30
+ip address 10.0.2.2 255.255.255.252
+ipv6 address 2001:DB8:250:7000::2/64
+no shut
+
+inter g0/0.80
+encapsulation dot1q 80
+desc WAN C2 10.0.2.8/30
+ip address 10.0.2.10 255.255.255.252
+ipv6 address 2001:DB8:250:9000::10/64
+no shut
+
+inter g0/0
+no shut
+
+router ospf 1
+router-id 20.0.0.231
+network 10.0.2.0 0.0.0.3 area 0
+network 10.0.2.8 0.0.0.3 area 0
+network 20.0.0.231 0.0.0.0 area 0
+network 172.16.0.0 0.0.7.255 area 0
+
+ipv6 router ospf 1
+router-id 20.0.0.231
+
+inter g0/0.85
+ipv6 ospf 1 area 0
+
+inter g0/0.80
+ipv6 ospf 1 area 0
+
+inter loopback 0
+ipv6 ospf 1 area 0
+
+router bgp 250
+bgp router-id 20.0.0.231
+bgp log-neighbor-changes
+
+neighbor 20.0.0.251 remote-as 250
+neighbor 20.0.0.251 update-source Loopback0
+
+neighbor 20.0.0.252 remote-as 250
+neighbor 20.0.0.252 update-source Loopback0
+
+neighbor 20.0.0.241 remote-as 250
+neighbor 20.0.0.241 update-source Loopback0
+
+neighbor 20.0.0.242 remote-as 250
+neighbor 20.0.0.242 update-source Loopback0
+
+neighbor 20.0.0.232 remote-as 250
+neighbor 20.0.0.232 update-source Loopback0
+
+neighbor 2001:DB8:250:1000::101 remote-as 250
+neighbor 2001:DB8:250:1000::101 update-source Loopback0
+
+neighbor 2001:DB8:250:1000::102 remote-as 250
+neighbor 2001:DB8:250:1000::102 update-source Loopback0
+
+neighbor 2001:DB8:250:1000::C1 remote-as 250
+neighbor 2001:DB8:250:1000::C1 update-source Loopback0
+
+neighbor 2001:DB8:250:1000::C2 remote-as 250
+neighbor 2001:DB8:250:1000::C2 update-source Loopback0
+
+neighbor 2001:DB8:250:1000::112 remote-as 250
+neighbor 2001:DB8:250:1000::112 update-source Loopback0
+
+address-family ipv4
+neighbor 20.0.0.251 activate
+neighbor 20.0.0.251 next-hop-self
+neighbor 20.0.0.252 activate
+neighbor 20.0.0.252 next-hop-self
+neighbor 20.0.0.241 activate
+neighbor 20.0.0.241 next-hop-self
+neighbor 20.0.0.242 activate
+neighbor 20.0.0.242 next-hop-self
+neighbor 20.0.0.232 activate
+neighbor 20.0.0.232 next-hop-self
+
+network 20.0.0.231 mask 255.255.255.255
+network 172.16.0.0 mask 255.255.248.0
+network 10.0.2.0 mask 255.255.255.252
+network 10.0.2.8 mask 255.255.255.252
+
+exit-address-family
+
+address-family ipv6
+neighbor 2001:DB8:250:1000::101 activate
+neighbor 2001:DB8:250:1000::101 next-hop-self
+neighbor 2001:DB8:250:1000::102 activate
+neighbor 2001:DB8:250:1000::102 next-hop-self
+neighbor 2001:DB8:250:1000::C1 activate
+neighbor 2001:DB8:250:1000::C1 next-hop-self
+neighbor 2001:DB8:250:1000::C2 activate
+neighbor 2001:DB8:250:1000::C2 next-hop-self
+neighbor 2001:DB8:250:1000::112 activate
+neighbor 2001:DB8:250:1000::112 next-hop-self
+
+network 2001:DB8:250:1000::111/128
+network 2001:DB8:250:7000::/64
+network 2001:DB8:250:9000::/64
+
+exit-address-family
+
+end
+write memory
