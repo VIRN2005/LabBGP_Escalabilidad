@@ -131,7 +131,7 @@ neighbor 2001:DB8:250:1000::111 next-hop-self
 
 network 2001:DB8:250:1000::112/128
 network 2001:DB8:250:8000::/64
-network 2001:DB8:250:10000::/64
+network 2001:DB8:250:1000::/64
 
 exit-address-family
 
