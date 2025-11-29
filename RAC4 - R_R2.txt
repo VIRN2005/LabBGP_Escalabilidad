@@ -39,7 +39,7 @@ inter g0/0.90
 encapsulation dot1q 90
 desc WAN C2 10.0.2.12/30
 ip address 10.0.2.14 255.255.255.252
-ipv6 address 2001:DB8:250:10000::14/64
+ipv6 address 2001:DB8:250:1001::14/64
 no shut
 
 inter g0/0
